@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require_relative '../test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 require 'memcached'
 require 'active_support'
 require 'active_support/core_ext/module/aliasing'
@@ -22,7 +20,7 @@ describe ActiveSupport::Cache::LibmemcachedStore do
   end
 
   before do
-    @cache = ActiveSupport::Cache.lookup_store(:libmemcached_store, expires_in: 60)
+    @cache = ActiveSupport::Cache.lookup_store(:libmemcached_store, :expires_in => 60)
     @cache.clear
     @cache.silence!
   end
@@ -56,8 +54,8 @@ describe ActiveSupport::Cache::LibmemcachedStore do
     it "fetch_with_forced_cache_miss" do
       @cache.write('foo', 'bar')
       @cache.expects(:read_entry).never
-      @cache.expects(:write_entry).with('foo', 'baz', force: true)
-      assert_equal 'baz', @cache.fetch('foo', force: true) { 'baz' }
+      @cache.expects(:write_entry).with('foo', 'baz', :force => true)
+      assert_equal 'baz', @cache.fetch('foo', :force => true) { 'baz' }
     end
 
     it "fetch_with_cached_false" do
@@ -68,7 +66,7 @@ describe ActiveSupport::Cache::LibmemcachedStore do
     it "fetch_with_raw_object" do
       o = Object.new
       o.instance_variable_set :@foo, 'bar'
-      assert_equal o, @cache.fetch('foo', raw: true) { o }
+      assert_equal o, @cache.fetch('foo', :raw => true) { o }
     end
 
     it "fetch_with_cache_key" do
@@ -83,8 +81,8 @@ describe ActiveSupport::Cache::LibmemcachedStore do
     end
 
     it "should_read_and_write_hash" do
-      assert @cache.write('foo', { a: 'b' })
-      assert_equal({ a: 'b' }, @cache.read('foo'))
+      assert @cache.write('foo', { :a => 'b' })
+      assert_equal({ :a => 'b' }, @cache.read('foo'))
     end
 
     it "should_read_and_write_integer" do
@@ -321,7 +319,7 @@ describe ActiveSupport::Cache::LibmemcachedStore do
   end
 
   it "should_allow_configuration_of_custom_options" do
-    options = { client: { tcp_nodelay: true, distribution: :modula } }
+    options = { :client => { :tcp_nodelay => true, :distribution => :modula } }
 
     store = ActiveSupport::Cache.lookup_store :libmemcached_store, 'localhost', options
 

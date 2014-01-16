@@ -2,6 +2,9 @@ source "http://rubygems.org"
 
 gemspec
 
+gem 'activesupport', '~> 3.2.0'
+
 group :test do
-  gem 'dalli'
+  gem 'rdoc'
+  gem 'dalli', '2.5.0'
 end

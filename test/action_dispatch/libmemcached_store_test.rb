@@ -1,4 +1,4 @@
-require_relative '../test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 require File.expand_path('../abstract_unit', __FILE__)
 require 'action_dispatch/session/libmemcached_store'
 
@@ -54,7 +54,7 @@ class LibMemcachedStoreTest < ActionDispatch::IntegrationTest
     with_test_route_set do
       get '/get_session_value'
       assert_response :success
-      assert_equal 'foo: nil', response.body
+      assert_equal ":foo nil", response.body
     end
   end
 

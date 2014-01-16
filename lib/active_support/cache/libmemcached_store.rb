@@ -46,7 +46,7 @@ module ActiveSupport
 
       attr_reader :addresses
 
-      DEFAULT_CLIENT_OPTIONS = { distribution: :consistent_ketama, binary_protocol: true, default_ttl: 0 }
+      DEFAULT_CLIENT_OPTIONS = { :distribution => :consistent_ketama, :binary_protocol => true, :default_ttl => 0 }
       ESCAPE_KEY_CHARS = /[\x00-\x20%\x7F-\xFF]/n
       DEFAULT_COMPRESS_THRESHOLD = 4096
       FLAG_COMPRESSED = 0x2
@@ -81,7 +81,7 @@ module ActiveSupport
         end
         client_options[:default_ttl] = options.delete(:expires_in).to_i if options[:expires_in]
 
-        @options = {compress_threshold: DEFAULT_COMPRESS_THRESHOLD}.merge(options)
+        @options = { :compress_threshold => DEFAULT_COMPRESS_THRESHOLD}.merge(options)
         @addresses = addresses
         @cache = MemcachedWithFlags.new(@addresses, DEFAULT_CLIENT_OPTIONS.merge(client_options))
       end
@@ -183,7 +183,7 @@ module ActiveSupport
 
       def increment(key, amount = 1, options = nil)
         key = expanded_key(key)
-        instrument(:increment, key, amount: amount) do
+        instrument(:increment, key, :amount => amount) do
           @cache.incr(escape_and_normalize(key), amount)
         end
       rescue Memcached::NotFound
@@ -195,7 +195,7 @@ module ActiveSupport
 
       def decrement(key, amount = 1, options = nil)
         key = expanded_key(key)
-        instrument(:decrement, key, amount: amount) do
+        instrument(:decrement, key, :amount => amount) do
           @cache.decr(escape_and_normalize(key), amount)
         end
       rescue Memcached::NotFound
@@ -292,7 +292,7 @@ module ActiveSupport
       end
 
       def escape_and_normalize(key)
-        key = key.to_s.force_encoding("BINARY").gsub(ESCAPE_KEY_CHARS) { |match| "%#{match.getbyte(0).to_s(16).upcase}" }
+        key = key.to_s.gsub(ESCAPE_KEY_CHARS) { |match| "%#{match.getbyte(0).to_s(16).upcase}" }
         key_length = key.length
 
         return key if @namespace_length + key_length <= 250

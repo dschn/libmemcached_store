@@ -8,7 +8,7 @@ module ActionDispatch
       def initialize(app, options = {})
         options[:expire_after] ||= options[:expires]
         super
-        client_options = { default_ttl: options.fetch(:expire_after, 0) }
+        client_options = { :default_ttl => options.fetch(:expire_after, 0) }
         client_options[:prefix_key] = options[:prefix_key] || options[:namespace] || 'rack:session'
         @mutex = Mutex.new
         @pool = options[:cache] || Memcached.new(@default_options[:memcache_server], client_options)
